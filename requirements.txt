@@ -1,3 +1,4 @@
 websocket-client
 rel
 pyautogui
+python-dotenv
