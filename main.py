@@ -2,7 +2,7 @@ import websocket
 import rel
 import os
 from dotenv import load_dotenv
-from zoomer import create_zoom_room
+from zoomer import create_zoom_room, accept_remote_control
 
 load_dotenv()
 
@@ -10,8 +10,10 @@ REMOTE_COMMAND_WSS_HOST = os.environ['REMOTE_COMMAND_WSS_HOST']
 REMOTE_COMMAND_WSS_PORT = os.environ['REMOTE_COMMAND_WSS_PORT']
 
 def on_message(ws, message):
-    if message == 'create_room':
+    if message == 'create':
         create_zoom_room()
+    elif message == 'accept':
+        accept_remote_control()
 
 def on_error(ws, error):
     print(error)

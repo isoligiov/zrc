@@ -53,4 +53,7 @@ def create_zoom_room():
   hotkey('command', 'shift', 's')
   time.sleep(1)
 
-  # TODO: allow remote control
+def accept_remote_control():
+  bring_zoom_window_to_top("control")
+  time.sleep(1)
+  press('enter')
