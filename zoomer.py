@@ -45,15 +45,30 @@ def create_zoom_room():
       join_audio_found = zoom_window_exists("Join audio")
       if join_audio_found == 'no':
         break
+
+  for i in range(5):
+    press('enter')
+    time.sleep(1)
+    switch_window()
+    time.sleep(1)
   
   # Share screen
   time.sleep(.5)
-  bring_zoom_window_to_top("Zoom Meeting")
-  time.sleep(1)
-  hotkey('command', 'shift', 's')
-  time.sleep(1)
+  share_screen()
 
 def accept_remote_control():
   bring_zoom_window_to_top("control")
   time.sleep(1)
   press('enter')
+
+def share_screen():
+  bring_zoom_window_to_top("Zoom Meeting")
+  time.sleep(1)
+  hotkey('command', 'shift', 's')
+  time.sleep(1)
+
+def press_enter():
+  press('enter')
+
+def switch_window():
+  hotkey('command', '`')
