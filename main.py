@@ -8,6 +8,7 @@ load_dotenv()
 
 REMOTE_COMMAND_WSS_HOST = os.environ['REMOTE_COMMAND_WSS_HOST']
 REMOTE_COMMAND_WSS_PORT = os.environ['REMOTE_COMMAND_WSS_PORT']
+REMOTE_COMMAND_APP_NAME = os.environ['REMOTE_COMMAND_APP_NAME']
 
 def on_message(ws, message):
     if message == 'create':
@@ -29,7 +30,7 @@ def on_close(ws, close_status_code, close_msg):
 
 def on_open(ws):
     print("Opened connection")
-    ws.send_text('zoom')
+    ws.send_text(REMOTE_COMMAND_APP_NAME)
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
