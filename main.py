@@ -2,7 +2,7 @@ import websocket
 import rel
 import os
 from dotenv import load_dotenv
-from zoomer import create_zoom_room, accept_remote_control, press_enter, share_screen, switch_window, hide_window
+from zoomer import open_zoom_app, create_zoom_room, accept_remote_control, press_enter, share_screen, switch_window, hide_window
 
 load_dotenv()
 
@@ -11,7 +11,9 @@ REMOTE_COMMAND_WSS_PORT = os.environ['REMOTE_COMMAND_WSS_PORT']
 REMOTE_COMMAND_APP_NAME = os.environ['REMOTE_COMMAND_APP_NAME']
 
 def on_message(ws, message):
-    if message == 'create':
+    if message == 'open':
+        open_zoom_app()
+    elif message == 'create':
         create_zoom_room()
     elif message == 'accept':
         accept_remote_control()

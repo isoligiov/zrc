@@ -1,6 +1,10 @@
 from pyautogui import press, hotkey
 from utils import bring_zoom_window_to_top, zoom_window_exists, hide_zoom_window
 import time
+import os
+
+def open_zoom_app():
+  os.system("open /Applications/zoom.us.app")
 
 def create_zoom_room():
   # check if zoom meeting is already created
