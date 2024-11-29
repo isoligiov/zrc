@@ -2,7 +2,7 @@ import websocket
 import rel
 import os
 from dotenv import load_dotenv
-from zoomer import create_zoom_room, accept_remote_control, press_enter, share_screen, switch_window
+from zoomer import create_zoom_room, accept_remote_control, press_enter, share_screen, switch_window, hide_window
 
 load_dotenv()
 
@@ -21,6 +21,8 @@ def on_message(ws, message):
         share_screen()
     elif message == 'switch':
         switch_window()
+    elif message == 'hide':
+        hide_window()
 
 def on_error(ws, error):
     print(error)

@@ -1,5 +1,5 @@
 from pyautogui import press, hotkey
-from utils import bring_zoom_window_to_top, zoom_window_exists
+from utils import bring_zoom_window_to_top, zoom_window_exists, hide_zoom_window
 import time
 
 def create_zoom_room():
@@ -72,3 +72,6 @@ def press_enter():
 
 def switch_window():
   hotkey('command', '`')
+
+def hide_window():
+  hide_zoom_window()
