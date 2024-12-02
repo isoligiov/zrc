@@ -60,7 +60,7 @@ def create_zoom_room():
   time.sleep(.5)
   share_screen()
 
-def accept_remote_control():
+def approve_remote_control():
   bring_zoom_window_to_top("control")
   time.sleep(1)
   press('enter')
@@ -71,11 +71,17 @@ def share_screen():
   hotkey('command', 'shift', 's')
   time.sleep(1)
 
+def focus_zoom_meeting():
+  bring_zoom_window_to_top("Zoom Meeting")
+
 def press_enter():
   press('enter')
 
-def switch_window():
+def switch_tab():
   hotkey('command', '`')
+
+def switch_window():
+  hotkey('command', 'tab')
 
 def hide_window():
   hide_zoom_window()

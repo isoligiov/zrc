@@ -2,7 +2,17 @@ import websocket
 import rel
 import os
 from dotenv import load_dotenv
-from zoomer import open_zoom_app, create_zoom_room, accept_remote_control, press_enter, share_screen, switch_window, hide_window
+from zoomer import (
+  open_zoom_app,
+  create_zoom_room,
+  approve_remote_control,
+  press_enter,
+  share_screen,
+  switch_tab,
+  switch_window,
+  focus_zoom_meeting,
+  hide_window,
+)
 
 load_dotenv()
 
@@ -15,14 +25,18 @@ def on_message(ws, message):
         open_zoom_app()
     elif message == 'create':
         create_zoom_room()
-    elif message == 'accept':
-        accept_remote_control()
+    elif message == 'approve':
+        approve_remote_control()
     elif message == 'enter':
         press_enter()
     elif message == 'share':
         share_screen()
+    elif message == 'switchtab':
+        switch_tab()
     elif message == 'switch':
         switch_window()
+    elif message == 'focus':
+        focus_zoom_meeting()
     elif message == 'hide':
         hide_window()
 
