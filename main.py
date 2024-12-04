@@ -25,7 +25,7 @@ def on_message(ws, message):
         open_zoom_app()
     elif message == 'create':
         create_zoom_room()
-    elif message == 'approve':
+    elif message == 'approve' or message == "accept":
         approve_remote_control()
     elif message == 'enter':
         press_enter()
