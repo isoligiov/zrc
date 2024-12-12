@@ -8,6 +8,7 @@ from zoomer import (
   approve_remote_control,
   press_enter,
   share_screen,
+  admit_user,
   switch_tab,
   switch_window,
   focus_zoom_meeting,
@@ -31,6 +32,8 @@ def on_message(ws, message):
         press_enter()
     elif message == 'share':
         share_screen()
+    elif message == 'admit':
+        admit_user()
     elif message == 'switchtab':
         switch_tab()
     elif message == 'switch':

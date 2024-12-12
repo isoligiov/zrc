@@ -1,5 +1,10 @@
-from pyautogui import press, hotkey
-from utils import bring_zoom_window_to_top, zoom_window_exists, hide_zoom_window
+from pyautogui import press, hotkey, click
+from utils import (
+  bring_zoom_window_to_top,
+  zoom_window_exists,
+  hide_zoom_window,
+  find_admit_button,
+)
 import time
 import os
 
@@ -70,6 +75,11 @@ def share_screen():
   time.sleep(1)
   hotkey('command', 'shift', 's')
   time.sleep(1)
+
+def admit_user():
+  bring_zoom_window_to_top("Zoom Meeting")
+  x, y = find_admit_button()
+  click(x, y)
 
 def focus_zoom_meeting():
   bring_zoom_window_to_top("Zoom Meeting")
