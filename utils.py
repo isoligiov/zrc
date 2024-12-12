@@ -82,26 +82,26 @@ def find_text_position(image, target_text, lang='eng'):
     data = pytesseract.image_to_data(image, lang=lang, output_type=pytesseract.Output.DICT)
     for i, word in enumerate(data['text']):
         print(word)
-        if target_text.lower() in filter_lowercase_alpha(word.lower()):
+        if target_text.lower() in filter_lowercase_alpha(word.lower().strip()):
             x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
             return x, y, w, h
     return None
 
-def screenshot_region(region, save_path=None):
+def screenshot_region(region=None, save_path=None):
     screenshot = pyautogui.screenshot(region=region)
     if save_path:
         screenshot.save(save_path)
     return screenshot
 
 def find_admit_button():
-    left, top, width, height = get_window_rect('Zoom Meeting')
-    region = (left, top, width, height)
-    zoom_screenshot = screenshot_region(region, 'screenshot.png')
+    zoom_screenshot = screenshot_region(None, 'screenshot.png')
     grayscale_image = zoom_screenshot.convert('L')
     admit_position = find_text_position(grayscale_image, 'Admit')
     if admit_position is not None:
+        print(admit_position)
         x, y, w, h = admit_position
-        return region[0] + x + w // 2, region[1] + y + h // 2
+        return x + w // 2, y + h // 2
+        # return region[0] + x + w // 2, region[1] + y + h // 2
     else:
         return None
 
