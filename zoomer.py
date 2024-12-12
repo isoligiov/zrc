@@ -4,6 +4,7 @@ from utils import (
   zoom_window_exists,
   hide_zoom_window,
   find_admit_button,
+  move_mouse_smoothly,
 )
 import time
 import os
@@ -79,6 +80,7 @@ def share_screen():
 def admit_user():
   bring_zoom_window_to_top("Zoom Meeting")
   x, y = find_admit_button()
+  move_mouse_smoothly(x, y, duration=0.5)
   click(x, y)
 
 def focus_zoom_meeting():

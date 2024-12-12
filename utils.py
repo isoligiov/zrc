@@ -1,6 +1,10 @@
 import subprocess
 import pytesseract
 import pyautogui
+from pynput.mouse import Controller as MouseController
+import time
+
+mouse = MouseController()
 
 def execute_apple_script(script):
     osa_command = ['osascript', '-e', script]
@@ -71,11 +75,14 @@ return "no"
     rect_str = execute_apple_script(script)
     return [ int(num) for num in rect_str.split(',') ]
 
+def filter_lowercase_alpha(input_string):
+    return ''.join([char for char in input_string if 'a' <= char <= 'z'])
+
 def find_text_position(image, target_text, lang='eng'):
     data = pytesseract.image_to_data(image, lang=lang, output_type=pytesseract.Output.DICT)
     for i, word in enumerate(data['text']):
         print(word)
-        if word.lower() == target_text.lower():
+        if target_text.lower() in filter_lowercase_alpha(word.lower()):
             x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
             return x, y, w, h
     return None
@@ -88,7 +95,7 @@ def screenshot_region(region, save_path=None):
 
 def find_admit_button():
     left, top, width, height = get_window_rect('Zoom Meeting')
-    region = (left, top + 50, width, 200)
+    region = (left, top, width, height)
     zoom_screenshot = screenshot_region(region, 'screenshot.png')
     grayscale_image = zoom_screenshot.convert('L')
     admit_position = find_text_position(grayscale_image, 'Admit')
@@ -97,3 +104,20 @@ def find_admit_button():
         return region[0] + x + w // 2, region[1] + y + h // 2
     else:
         return None
+
+def move_mouse_smoothly(target_x, target_y, duration=0.5, steps=150):
+    start_x, start_y = pyautogui.position()
+    delta_x = target_x - start_x
+    delta_y = target_y - start_y
+
+    for i in range(steps):
+        # Calculate interpolation factor using easeOutQuint
+        t = i / steps
+        t = 1 - (1 - t)**5
+        
+        # Calculate next position
+        current_x = start_x + (delta_x * t)
+        current_y = start_y + (delta_y * t)
+
+        mouse.position = (int(current_x), int(current_y))
+        time.sleep(duration / steps)

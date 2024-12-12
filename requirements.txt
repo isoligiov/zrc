@@ -1,6 +1,7 @@
 websocket-client
 rel
 pyautogui
+pynput
 python-dotenv
 pytesseract
 pillow

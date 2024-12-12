@@ -1,4 +1,3 @@
-from utils import get_window_rect
+from utils import move_mouse_smoothly
 
-left, top, width, height = get_window_rect('Zoom Meeting')
-print(left, top, width, height)
+move_mouse_smoothly(500, 500, 0.5)
