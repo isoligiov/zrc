@@ -141,7 +141,7 @@ def find_admit_button():
                 window_left * scalex,
                 window_top * scaley,
                 window_width * scalex,
-                window_height * scaley
+                min(window_height, 200) * scaley
             ),
             f'screenshot_{window_index}.png'
         )
