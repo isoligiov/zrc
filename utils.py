@@ -130,17 +130,28 @@ def screenshot_region(region=None, save_path=None):
 def find_admit_button():
     windows = get_zoom_window_rects()
     logical_left, logical_top, logical_right, logical_bottom = get_logical_screen_size()
+    physical_width, physical_height = pyautogui.size()
+    scalex = physical_width - (logical_right - logical_left)
+    scaley = physical_height - (logical_bottom - logical_top)
     for window_index, window in enumerate(windows):
-        print(window)
-        region = window[1]
-        zoom_screenshot = screenshot_region(region, f'screenshot_{window_index}.png')
+        print(window, scalex, scaley)
+        window_left, window_top, window_width, window_height = window[1]
+        zoom_screenshot = screenshot_region(
+            (
+                window_left * scalex,
+                window_top * scaley,
+                window_width * scalex,
+                window_height * scaley
+            ),
+            f'screenshot_{window_index}.png'
+        )
         grayscale_image = zoom_screenshot.convert('L')
         admit_position = find_text_position(grayscale_image, 'Admit')
         if admit_position is not None:
             # physical_width, physical_height = pyautogui.size()
             x, y, w, h = admit_position
-            centerx = region[0] + x + w // 2
-            centery = region[1] + y + h // 2
+            centerx = window_left + (x + w // 2) / scalex
+            centery = window_top + (y + h // 2) / scaley
             return centerx, centery
             # logicalx = centerx / physical_width * (logical_right - logical_left)
             # logicaly = centery / physical_height * (logical_bottom - logical_top)

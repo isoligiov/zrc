@@ -79,7 +79,11 @@ def share_screen():
 
 def admit_user():
   bring_zoom_window_to_top("Zoom Meeting")
-  x, y = find_admit_button()
+  admit_position = find_admit_button()
+  if admit_position is None:
+    print('Admit button not found')
+    return
+  x, y = admit_position
   move_mouse_smoothly(x, y, duration=0.5)
   click(x, y)
 
