@@ -1,3 +1,6 @@
-from utils import move_mouse_smoothly
+from utils import get_logical_screen_size
+import pyautogui
 
-move_mouse_smoothly(500, 500, 0.5)
+logical_left, logical_top, logical_right, logical_bottom = get_logical_screen_size()
+physical_width, physical_height = pyautogui.size()
+print(physical_width, physical_height)
