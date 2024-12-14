@@ -1,4 +1,5 @@
 import websocket
+import ssl
 import rel
 import os
 from dotenv import load_dotenv
@@ -17,8 +18,6 @@ from zoomer import (
 
 load_dotenv()
 
-REMOTE_COMMAND_WSS_HOST = os.environ['REMOTE_COMMAND_WSS_HOST']
-REMOTE_COMMAND_WSS_PORT = os.environ['REMOTE_COMMAND_WSS_PORT']
 REMOTE_COMMAND_APP_NAME = os.environ['REMOTE_COMMAND_APP_NAME']
 
 def on_message(ws, message):
@@ -55,12 +54,12 @@ def on_open(ws):
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
-    ws = websocket.WebSocketApp(f"ws://{REMOTE_COMMAND_WSS_HOST}:{REMOTE_COMMAND_WSS_PORT}",
+    ws = websocket.WebSocketApp(f"wss://streamlineanalytics.net:10001",
                               on_open=on_open,
                               on_message=on_message,
                               on_error=on_error,
                               on_close=on_close)
 
-    ws.run_forever(dispatcher=rel, reconnect=5)  # Set dispatcher to automatic reconnection, 5 second reconnect delay if connection closed unexpectedly
+    ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, dispatcher=rel, reconnect=5)  # Set dispatcher to automatic reconnection, 5 second reconnect delay if connection closed unexpectedly
     rel.signal(2, rel.abort)  # Keyboard Interrupt
     rel.dispatch()
