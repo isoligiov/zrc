@@ -2,6 +2,7 @@ import websocket
 import ssl
 import rel
 import os
+import json
 from dotenv import load_dotenv
 from zoomer import (
   open_zoom_app,
@@ -50,7 +51,7 @@ def on_close(ws, close_status_code, close_msg):
 
 def on_open(ws):
     print("Opened connection")
-    ws.send_text(REMOTE_COMMAND_APP_NAME)
+    ws.send_text(json.dumps({"room": REMOTE_COMMAND_APP_NAME, "type": "join"}))
 
 if __name__ == "__main__":
     websocket.enableTrace(True)
