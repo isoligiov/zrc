@@ -3,6 +3,7 @@ import pytesseract
 import pyautogui
 from pynput.mouse import Controller as MouseController
 import time
+from PIL import Image
 
 mouse = MouseController()
 
@@ -126,6 +127,22 @@ def screenshot_region(region=None, save_path=None):
         screenshot.save(save_path)
     return screenshot
 
+def min_rgb_filter(img):
+    img = img.convert("RGB")
+    
+    # Get image dimensions
+    width, height = img.size
+
+    # Process every pixel
+    for x in range(width):
+        for y in range(height):
+            r, g, b = img.getpixel((x, y))
+            minimum_value = min(r, g, b)
+            
+            # Setting all three channels to the minimum value
+            img.putpixel((x, y), (minimum_value, minimum_value, minimum_value))
+    return img
+
 def find_admit_button():
     windows = get_zoom_window_rects()
     logical_left, logical_top, logical_right, logical_bottom = get_logical_screen_size()
@@ -133,28 +150,33 @@ def find_admit_button():
     scalex = physical_width // (logical_right - logical_left)
     scaley = physical_height // (logical_bottom - logical_top)
     for window_index, window in enumerate(windows):
-        window_left, window_top, window_width, window_height = window[1]
-        zoom_screenshot = screenshot_region(
-            (
-                window_left * scalex,
-                window_top * scaley,
-                window_width * scalex,
-                min(window_height, 200) * scaley
-            ),
-            f'screenshot_{window_index}.png'
-        )
-        grayscale_image = zoom_screenshot.convert('L')
-        admit_position = find_text_position(grayscale_image, 'Admit')
-        if admit_position is not None:
-            # physical_width, physical_height = pyautogui.size()
-            x, y, w, h = admit_position
-            centerx = window_left + (x + w // 2) / scalex
-            centery = window_top + (y + h // 2) / scaley
-            return centerx, centery
-            # logicalx = centerx / physical_width * (logical_right - logical_left)
-            # logicaly = centery / physical_height * (logical_bottom - logical_top)
-            # return logicalx, logicaly
-            # return region[0] + x + w // 2, region[1] + y + h // 2
+        try:
+            window_left, window_top, window_width, window_height = window[1]
+            img_save_path = f'screenshot_{window_index}.png'
+            zoom_screenshot = screenshot_region(
+                (
+                    window_left * scalex,
+                    window_top * scaley,
+                    window_width * scalex,
+                    min(window_height, 200) * scaley
+                ),
+                img_save_path
+            )
+            filtered_image = min_rgb_filter(zoom_screenshot)
+            filtered_image.save(img_save_path)
+            admit_position = find_text_position(filtered_image, 'Admit')
+            if admit_position is not None:
+                # physical_width, physical_height = pyautogui.size()
+                x, y, w, h = admit_position
+                centerx = window_left + (x + w // 2) / scalex
+                centery = window_top + (y + h // 2) / scaley
+                return centerx, centery
+                # logicalx = centerx / physical_width * (logical_right - logical_left)
+                # logicaly = centery / physical_height * (logical_bottom - logical_top)
+                # return logicalx, logicaly
+                # return region[0] + x + w // 2, region[1] + y + h // 2
+        except:
+            pass
     return None
 
 def move_mouse_smoothly(target_x, target_y, duration=0.5, steps=150):

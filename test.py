@@ -1,6 +1,5 @@
-from utils import get_logical_screen_size
-import pyautogui
-
-logical_left, logical_top, logical_right, logical_bottom = get_logical_screen_size()
-physical_width, physical_height = pyautogui.size()
-print(physical_width, physical_height)
+from utils import min_rgb_filter
+from PIL import Image
+img = Image.open('screenshot.png')
+img = min_rgb_filter(img)
+img.save('a.png')
