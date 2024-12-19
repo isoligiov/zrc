@@ -116,6 +116,7 @@ def filter_lowercase_alpha(input_string):
 def find_text_position(image, target_text, lang='eng'):
     data = pytesseract.image_to_data(image, lang=lang, output_type=pytesseract.Output.DICT)
     for i, word in enumerate(data['text']):
+        print(word)
         if target_text.lower() in filter_lowercase_alpha(word.lower().strip()):
             x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
             return x, y, w, h
