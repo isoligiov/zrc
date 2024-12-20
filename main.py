@@ -65,10 +65,10 @@ def reconnect():
                               on_error=on_error,
                               on_close=on_close)
 
-    ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, dispatcher=rel, reconnect=5)
+    ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, dispatcher=rel, reconnect=5, ping_interval=10)
 
 if __name__ == "__main__":
-    websocket.enableTrace(True)
+    websocket.enableTrace(False)
     reconnect()
     rel.signal(2, rel.abort)  # Keyboard Interrupt
     rel.dispatch()
