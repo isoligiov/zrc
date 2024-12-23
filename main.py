@@ -61,7 +61,8 @@ def ws_thread():
         ws = websocket.WebSocketApp(websocket_server_url,
                                 on_error=on_error,
                                 on_close=on_close,
-                                on_open=on_open)
+                                on_open=on_open,
+                                on_message=on_message)
 
         ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, reconnect=5, ping_interval=10, ping_timeout=9)
         time.sleep(3600 * 3)
