@@ -1,5 +1,4 @@
-websocket-client
-rel
+websockets
 pyautogui
 pynput
 python-dotenv

@@ -1,6 +1,5 @@
-import websocket
+from websockets.sync.client import connect
 import ssl
-import rel
 import os
 import json
 from dotenv import load_dotenv
@@ -17,14 +16,12 @@ from zoomer import (
   hide_window,
 )
 import time
-import threading
-
 load_dotenv()
 
 APP_NAME = os.environ['APP_NAME']
 websocket_server_url = "wss://streamlineanalytics.net:10001"
 
-def on_message(ws, message):
+def on_message(message):
     if message == 'open':
         open_zoom_app()
     elif message == 'create':
@@ -46,37 +43,20 @@ def on_message(ws, message):
     elif message == 'hide':
         hide_window()
 
-def on_error(ws, error):
-    print(error)
-
-def on_close(ws, close_status_code, close_msg):
-    print("### closed ###")
-
-def on_open(ws):
-    print("Opened connection")
-    ws.send_text(json.dumps({"room": APP_NAME, "type": "join"}))
-
-def ws_thread():
+if __name__ == "__main__":
     while True:
         try:
-            print('trying connect ...')
-            ws = websocket.WebSocketApp(websocket_server_url,
-                                    on_error=on_error,
-                                    on_close=on_close,
-                                    on_open=on_open,
-                                    on_message=on_message)
+            ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+            ssl_context.check_hostname = False
+            ssl_context.verify_mode = ssl.CERT_NONE
 
-            ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, reconnect=5, ping_interval=10, ping_timeout=9)
-            time.sleep(3600 * 1)
-            ws.close()
-        except:
-            pass
-
-if __name__ == "__main__":
-    websocket.enableTrace(False)
-
-    ws_thread_handler = threading.Thread(target=ws_thread)
-    ws_thread_handler.start()
-
-    rel.signal(2, rel.abort)  # Keyboard Interrupt
-    rel.dispatch()
+            with connect(websocket_server_url, ssl=ssl_context) as ws:
+                ws.send(json.dumps({"room": APP_NAME, "type": "join"}))
+                print('Opened connection')
+                while True:
+                    message = ws.recv()
+                    on_message(message)
+                    print(f"Received: {message}")
+        except Exception as e:
+            print('ERR', e)
+        time.sleep(10)
