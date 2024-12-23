@@ -66,7 +66,7 @@ def ws_thread():
                                     on_message=on_message)
 
             ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, reconnect=5, ping_interval=10, ping_timeout=9)
-            time.sleep(3600 * 2)
+            time.sleep(3600 * 1)
             ws.close()
         except:
             pass
