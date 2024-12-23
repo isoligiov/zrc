@@ -59,6 +59,7 @@ def on_open(ws):
 def ws_thread():
     while True:
         try:
+            print('trying connect ...')
             ws = websocket.WebSocketApp(websocket_server_url,
                                     on_error=on_error,
                                     on_close=on_close,
