@@ -16,10 +16,13 @@ from zoomer import (
   focus_zoom_meeting,
   hide_window,
 )
+import time
+import threading
 
 load_dotenv()
 
 APP_NAME = os.environ['APP_NAME']
+websocket_server_url = "wss://streamlineanalytics.net:10001"
 
 def on_message(ws, message):
     if message == 'open':
@@ -53,16 +56,22 @@ def on_open(ws):
     print("Opened connection")
     ws.send_text(json.dumps({"room": APP_NAME, "type": "join"}))
 
+def ws_thread():
+    while True:
+        ws = websocket.WebSocketApp(websocket_server_url,
+                                on_error=on_error,
+                                on_close=on_close,
+                                on_open=on_open)
+
+        ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, dispatcher=rel, reconnect=5, ping_interval=10, ping_timeout=9)
+        time.sleep(3600 * 3)
+        ws.close()
 
 if __name__ == "__main__":
     websocket.enableTrace(False)
-    ws = websocket.WebSocketApp(f"wss://streamlineanalytics.net:10001",
-                              on_open=on_open,
-                              on_message=on_message,
-                              on_error=on_error,
-                              on_close=on_close)
 
-    ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, dispatcher=rel, reconnect=5, ping_interval=10, ping_timeout=9)
+    ws_thread_handler = threading.Thread(target=ws_thread)
+    ws_thread_handler.start()
 
     rel.signal(2, rel.abort)  # Keyboard Interrupt
     rel.dispatch()
