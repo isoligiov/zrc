@@ -63,7 +63,7 @@ def ws_thread():
                                 on_close=on_close,
                                 on_open=on_open)
 
-        ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, dispatcher=rel, reconnect=5, ping_interval=10, ping_timeout=9)
+        ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, reconnect=5, ping_interval=10, ping_timeout=9)
         time.sleep(3600 * 3)
         ws.close()
 
