@@ -20,7 +20,7 @@ import threading
 load_dotenv()
 
 APP_NAME = os.environ['APP_NAME']
-websocket_server_url = "ws://5.133.9.244:10010"
+websocket_server_url = "ws://5.133.9.244:10001"
 
 def on_message(message):
     if message == 'open':
