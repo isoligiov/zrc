@@ -15,6 +15,8 @@ from zoomer import (
   hide_window,
 )
 import time
+import threading
+
 load_dotenv()
 
 APP_NAME = os.environ['APP_NAME']
@@ -42,6 +44,15 @@ def on_message(message):
     elif message == 'hide':
         hide_window()
 
+def send_ping(ws):
+    while True:
+        try:
+            ws.send("ping")
+        except Exception as e:
+            print("Ping failed:", e)
+        time.sleep(30)  # Send ping every 30 seconds
+
+
 if __name__ == "__main__":
     while True:
         try:
@@ -49,6 +60,11 @@ if __name__ == "__main__":
             with connect(websocket_server_url) as ws:
                 ws.send(json.dumps({"room": APP_NAME, "type": "join"}))
                 print('Opened connection')
+
+                # Start a background thread for pinging
+                ping_thread = threading.Thread(target=send_ping, args=(ws,), daemon=True)
+                ping_thread.start()
+
                 while True:
                     message = ws.recv()
                     on_message(message)
