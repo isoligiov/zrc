@@ -1,26 +1,27 @@
 from websockets.sync.client import connect
 import os
 import json
-from dotenv import load_dotenv
-from zoomer import (
-  open_zoom_app,
-  create_zoom_room,
-  approve_remote_control,
-  press_enter,
-  share_screen,
-  admit_user,
-  switch_tab,
-  switch_window,
-  focus_zoom_meeting,
-  hide_window,
-)
 import time
 import threading
+from dotenv import load_dotenv
+from zoomer import (
+    open_zoom_app,
+    create_zoom_room,
+    approve_remote_control,
+    press_enter,
+    share_screen,
+    admit_user,
+    switch_tab,
+    switch_window,
+    focus_zoom_meeting,
+    hide_window,
+)
 
 load_dotenv()
 
 APP_NAME = os.environ['APP_NAME']
 websocket_server_url = "ws://5.133.9.244:10001"
+exit_flag = threading.Event()
 
 def on_message(message):
     if message == 'open':
@@ -45,30 +46,39 @@ def on_message(message):
         hide_window()
 
 def send_ping(ws):
-    while True:
+    while not exit_flag.is_set():
         try:
             ws.send("ping")
         except Exception as e:
             print("Ping failed:", e)
+            exit_flag.set()  # Signal the main loop to exit
+            return
         time.sleep(30)  # Send ping every 30 seconds
-
 
 if __name__ == "__main__":
     while True:
         try:
-
             with connect(websocket_server_url) as ws:
                 ws.send(json.dumps({"room": APP_NAME, "type": "join"}))
                 print('Opened connection')
 
                 # Start a background thread for pinging
+                exit_flag.clear()
                 ping_thread = threading.Thread(target=send_ping, args=(ws,), daemon=True)
                 ping_thread.start()
 
-                while True:
-                    message = ws.recv()
-                    on_message(message)
-                    print(f"Received: {message}")
+                while not exit_flag.is_set():
+                    try:
+                        message = ws.recv(timeout=60)
+                        if message:
+                            on_message(message)
+                            print(f"Received: {message}")
+                    except TimeoutError:
+                        continue  # Allow checking of exit_flag
+                    except Exception as e:
+                        print("WebSocket error:", e)
+                        exit_flag.set()
         except Exception as e:
-            print('ERR', e)
-        time.sleep(10)
+            print('Connection error:', e)
+
+        time.sleep(5)  # Wait before reconnecting
