@@ -35,7 +35,7 @@ def bring_zoom_window_to_top(window_title):
         from pywinauto import application
         app = application.Application()
         try:
-            app.connect(path=ZOOM_APP_WINDOWS_PATH)
+            app.connect(title_re=".*%s.*" % window_title)
             app.set_focus()
         except:
             pass
