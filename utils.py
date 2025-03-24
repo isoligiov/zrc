@@ -4,6 +4,7 @@ import pyautogui
 from pynput.mouse import Controller as MouseController
 import time
 import sys
+from config import ZOOM_APP_WINDOWS_PATH
 
 mouse = MouseController()
 
@@ -33,8 +34,11 @@ def bring_zoom_window_to_top(window_title):
     elif sys.platform == "win32":
         from pywinauto import application
         app = application.Application()
-        app.connect(title_re=".*%s.*" % window_title)
-        app.set_focus()
+        try:
+            app.connect(path=ZOOM_APP_WINDOWS_PATH)
+            app.set_focus()
+        except:
+            pass
 
 
 def zoom_window_exists(window_title):
@@ -57,10 +61,12 @@ return "no"
         from pywinauto import application
         app = application.Application()
         try:
-            app.connect(title_re=".*%s.*" % window_title)
-            return app.window(title_re=".*%s.*" % window_title).exists()
+            app.connect(path=ZOOM_APP_WINDOWS_PATH)
+            if app.window(title_re=".*%s.*" % window_title).exists():
+                return "yes"
+            return 
         except:
-            return False
+            return "no"
 
 def hide_zoom_window():
     if sys.platform == "darwin":
@@ -74,7 +80,7 @@ def hide_zoom_window():
         from pywinauto import application
         app = application.Application()
         try:
-            app.connect(title_re=".*Zoom.*")
+            app.connect(path=ZOOM_APP_WINDOWS_PATH)
             zoom_windows = app.windows(title_re=".*Zoom.*")
             for window in zoom_windows:
                 window.minimize()

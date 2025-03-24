@@ -1,0 +1,1 @@
+ZOOM_APP_WINDOWS_PATH = "C:\\Program Files\\Zoom\\bin\\Zoom.exe"

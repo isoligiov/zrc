@@ -10,12 +10,13 @@ import time
 import os
 import subprocess
 import sys
+from config import ZOOM_APP_WINDOWS_PATH
 
 def open_zoom_app():
   if sys.platform == "darwin":
     os.system("open /Applications/zoom.us.app")
   elif sys.platform == "win32":
-    subprocess.Popen("C:\\Program Files\\Zoom\\bin\\Zoom.exe")
+    subprocess.Popen(ZOOM_APP_WINDOWS_PATH)
 
 def create_zoom_room():
   # check if zoom meeting is already created
