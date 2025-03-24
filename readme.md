@@ -3,6 +3,7 @@
 - In `Settings/Video` tab
   * uncheck `Always display participant name on their videos`.
   * check `Stop my video when joining`.
+  * uncheck `Always show preview when joining`.
 - In `Settings/Audio` tab
   * check `Automatically join computer audio when joining`.
   * check `Mute my mic when joining`.
