@@ -56,8 +56,11 @@ return "no"
     elif sys.platform == "win32":
         from pywinauto import application
         app = application.Application()
-        app.connect(title_re=".*%s.*" % window_title)
-        return app.window(title_re=".*%s.*" % window_title).exists()
+        try:
+            app.connect(title_re=".*%s.*" % window_title)
+            return app.window(title_re=".*%s.*" % window_title).exists()
+        except:
+            return False
 
 def hide_zoom_window():
     if sys.platform == "darwin":
@@ -70,10 +73,13 @@ def hide_zoom_window():
     elif sys.platform == "win32":
         from pywinauto import application
         app = application.Application()
-        app.connect(title_re=".*Zoom.*")
-        zoom_windows = app.windows(title_re=".*Zoom.*")
-        for window in zoom_windows:
-            window.minimize()
+        try:
+            app.connect(title_re=".*Zoom.*")
+            zoom_windows = app.windows(title_re=".*Zoom.*")
+            for window in zoom_windows:
+                window.minimize()
+        except:
+            pass
 
 def get_zoom_window_rects():
     script = """
