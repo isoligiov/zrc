@@ -4,3 +4,4 @@ pynput
 python-dotenv
 pytesseract
 pillow
+pywinauto

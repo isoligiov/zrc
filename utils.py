@@ -3,6 +3,7 @@ import pytesseract
 import pyautogui
 from pynput.mouse import Controller as MouseController
 import time
+import sys
 
 mouse = MouseController()
 
@@ -13,21 +14,28 @@ def execute_apple_script(script):
     return return_value
 
 def bring_zoom_window_to_top(window_title):
-    script = """
-activate application "zoom.us"
-tell application "System Events"
-    set p to first process where it is frontmost
-    repeat with w in every window of p
-        if (name of w) contains "{{title}}" then
-            tell p
-                perform action "AXRaise" of w
-            end tell
-        end if
-    end repeat
-end tell
-"""
-    script = script.replace("{{title}}", window_title)
-    return execute_apple_script(script)
+    if sys.platform == "darwin":
+        script = """
+    activate application "zoom.us"
+    tell application "System Events"
+        set p to first process where it is frontmost
+        repeat with w in every window of p
+            if (name of w) contains "{{title}}" then
+                tell p
+                    perform action "AXRaise" of w
+                end tell
+            end if
+        end repeat
+    end tell
+    """
+        script = script.replace("{{title}}", window_title)
+        return execute_apple_script(script)
+    elif sys.platform == "win32":
+        from pywinauto import application
+        app = application.Application()
+        app.connect(title_re=".*%s.*" % window_title)
+        app.set_focus()
+
 
 def get_all_zoom_windows(window_title):
     script = """
