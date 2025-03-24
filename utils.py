@@ -37,26 +37,9 @@ def bring_zoom_window_to_top(window_title):
         app.set_focus()
 
 
-def get_all_zoom_windows(window_title):
-    script = """
-activate application "zoom.us"
-tell application "System Events"
-    set p to first process where it is frontmost
-    set result
-    repeat with w in every window of p
-        if (name of w) contains "{{title}}" then
-            tell p
-                perform action "AXRaise" of w
-            end tell
-        end if
-    end repeat
-end tell
-"""
-    script = script.replace("{{title}}", window_title)
-    return execute_apple_script(script)
-
 def zoom_window_exists(window_title):
-    script = """
+    if sys.platform == "darwin":
+        script = """
 activate application "zoom.us"
 tell application "System Events"
     set p to first process where it is frontmost
@@ -68,16 +51,29 @@ tell application "System Events"
 end tell
 return "no"
 """
-    script = script.replace("{{title}}", window_title)
-    return execute_apple_script(script)
+        script = script.replace("{{title}}", window_title)
+        return execute_apple_script(script)
+    elif sys.platform == "win32":
+        from pywinauto import application
+        app = application.Application()
+        app.connect(title_re=".*%s.*" % window_title)
+        return app.window(title_re=".*%s.*" % window_title).exists()
 
 def hide_zoom_window():
-    script = """
-tell application "System Events"
-    set visible of process "zoom.us" to false
-end tell
-"""
-    return execute_apple_script(script)
+    if sys.platform == "darwin":
+        script = """
+    tell application "System Events"
+        set visible of process "zoom.us" to false
+    end tell
+    """
+        return execute_apple_script(script)
+    elif sys.platform == "win32":
+        from pywinauto import application
+        app = application.Application()
+        app.connect(title_re=".*Zoom.*")
+        zoom_windows = app.windows(title_re=".*Zoom.*")
+        for window in zoom_windows:
+            window.minimize()
 
 def get_zoom_window_rects():
     script = """

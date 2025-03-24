@@ -15,7 +15,7 @@ def open_zoom_app():
   if sys.platform == "darwin":
     os.system("open /Applications/zoom.us.app")
   elif sys.platform == "win32":
-    subprocess.Popen("C:\\Program Files\\zoom\\bin\\Zoom.exe")
+    subprocess.Popen("C:\\Program Files\\Zoom\\bin\\Zoom.exe")
 
 def create_zoom_room():
   # check if zoom meeting is already created
