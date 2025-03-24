@@ -3,7 +3,6 @@ import pytesseract
 import pyautogui
 from pynput.mouse import Controller as MouseController
 import time
-from PIL import Image
 
 mouse = MouseController()
 

@@ -8,9 +8,13 @@ from utils import (
 )
 import time
 import os
+import sys
 
 def open_zoom_app():
-  os.system("open /Applications/zoom.us.app")
+  if sys.platform == "darwin":
+    os.system("open /Applications/zoom.us.app")
+  elif sys.platform == "win32":
+    os.system("open /Applications/zoom.us.app")
 
 def create_zoom_room():
   # check if zoom meeting is already created
@@ -25,7 +29,11 @@ def create_zoom_room():
   # trigger zoom room create
   zoom_meeting_found = 'no'
   for i in range(3):
-    hotkey('command', 'ctrl', 'v')
+    if sys.platform == "darwin":
+      hotkey('command', 'ctrl', 'v')
+    elif sys.platform == "win32":
+      hotkey('alt', 'ctrl', 'v')
+    
     time.sleep(3)
     zoom_meeting_found = zoom_window_exists("Zoom Meeting")
     if zoom_meeting_found == 'yes':
@@ -50,7 +58,6 @@ def create_zoom_room():
     print('join audio found')
     for i in range(3):
       press('enter')
-      print('enter')
       time.sleep(3)
       join_audio_found = zoom_window_exists("Join audio")
       if join_audio_found == 'no':
@@ -63,7 +70,7 @@ def create_zoom_room():
     time.sleep(1)
   
   # Share screen
-  time.sleep(.5)
+  time.sleep(1)
   share_screen()
 
 def approve_remote_control():
@@ -74,8 +81,12 @@ def approve_remote_control():
 def share_screen():
   bring_zoom_window_to_top("Zoom Meeting")
   time.sleep(1)
-  hotkey('command', 'shift', 's')
+  if sys.platform == "darwin":
+    hotkey('command', 'shift', 's')
+  elif sys.platform == "win32":
+    hotkey('alt', 'shift', 's')
   time.sleep(1)
+  hide_window()
 
 def admit_user():
   bring_zoom_window_to_top("Zoom Meeting")
@@ -94,10 +105,14 @@ def press_enter():
   press('enter')
 
 def switch_tab():
-  hotkey('command', '`')
+  if sys.platform == "darwin":
+    hotkey('command', '`')
 
 def switch_window():
-  hotkey('command', 'tab')
+  if sys.platform == "darwin":
+    hotkey('command', 'tab')
+  elif sys.platform == "win32":
+    hotkey('alt', 'tab')
 
 def hide_window():
   hide_zoom_window()

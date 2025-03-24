@@ -36,7 +36,7 @@ def on_message(message):
         share_screen()
     elif message == 'admit':
         admit_user()
-    elif message == 'switchtab':
+    elif message == 'switchtab': # only works on macos
         switch_tab()
     elif message == 'switch':
         switch_window()
