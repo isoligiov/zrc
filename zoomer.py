@@ -87,7 +87,7 @@ def share_screen():
     hotkey('command', 'shift', 's')
   elif sys.platform == "win32":
     hotkey('alt', 'shift', 's')
-  time.sleep(1)
+  time.sleep(3)
   hide_window()
 
 def admit_user():
