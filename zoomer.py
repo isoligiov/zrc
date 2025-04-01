@@ -88,7 +88,6 @@ def share_screen():
   elif sys.platform == "win32":
     hotkey('alt', 'shift', 's')
   time.sleep(5)
-  hide_window()
 
 def admit_user():
   bring_zoom_window_to_top("Zoom Meeting")
