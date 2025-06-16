@@ -159,7 +159,7 @@ def min_rgb_filter(img):
             img.putpixel((x, y), (minimum_value, minimum_value, minimum_value))
     return img
 
-def find_text_in_screen(text_to_search: str):
+def find_text_in_screen(text_to_search: str, cut_size: int = 200):
     windows = get_zoom_window_rects()
     logical_left, logical_top, logical_right, logical_bottom = get_logical_screen_size()
     physical_width, physical_height = pyautogui.size()
@@ -174,7 +174,7 @@ def find_text_in_screen(text_to_search: str):
                     window_left * scalex,
                     window_top * scaley,
                     window_width * scalex,
-                    min(window_height, 200) * scaley
+                    min(window_height, cut_size) * scaley
                 ),
                 img_save_path
             )

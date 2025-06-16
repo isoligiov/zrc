@@ -78,7 +78,7 @@ def create_zoom_room():
 def approve_remote_control():
   bring_zoom_window_to_top("control")
   time.sleep(1)
-  admit_position = find_text_in_screen('Approve')
+  admit_position = find_text_in_screen('Approve', 400)
   if admit_position is None:
     print('Admit button not found')
     return
@@ -97,7 +97,7 @@ def share_screen():
 
 def admit_user():
   bring_zoom_window_to_top("Zoom Meeting")
-  admit_position = find_text_in_screen('Admit')
+  admit_position = find_text_in_screen('Admit', 200)
   if admit_position is None:
     print('Admit button not found')
     return
