@@ -138,14 +138,14 @@ auto_mode_thread_instance = None
 auto_mode_stop_event = threading.Event()
 
 def auto_mode_thread():
-    print('auto mode thread started')
-    while not auto_mode_stop_event.is_set():
-        connected = vpn_connected()
-        if connected:
-            break
-        time.sleep(1)
+    # print('auto mode thread started')
+    # while not auto_mode_stop_event.is_set():
+    #     connected = vpn_connected()
+    #     if connected:
+    #         break
+    #     time.sleep(1)
 
-    print('auto mode set')
+    # print('auto mode set')
 
     while not auto_mode_stop_event.is_set():
         zoom_meeting_found = zoom_window_exists("Zoom Meeting")
