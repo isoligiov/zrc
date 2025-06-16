@@ -134,49 +134,48 @@ def hide_window():
 
 
 
+auto_mode_thread_instance = None
+auto_mode_stop_event = threading.Event()
 
 def auto_mode_thread():
-  print('auto mode thread started')
-  while True:
-    connected = vpn_connected()
-    if connected:
-      break
-    time.sleep(1)
+    print('auto mode thread started')
+    while not auto_mode_stop_event.is_set():
+        connected = vpn_connected()
+        if connected:
+            break
+        time.sleep(1)
 
-  print('auto mode set')
+    print('auto mode set')
 
-  while True:
-    zoom_meeting_found = zoom_window_exists("Zoom Meeting")
-    if not zoom_meeting_found:
-      create_zoom_room()
-      time.sleep(2)
-      continue
+    while not auto_mode_stop_event.is_set():
+        zoom_meeting_found = zoom_window_exists("Zoom Meeting")
+        if not zoom_meeting_found:
+            create_zoom_room()
+            time.sleep(2)
+            continue
 
-    control_window_found = zoom_window_exists("control")
-    if control_window_found:
-      approve_remote_control()
-    time.sleep(2)
-
-auto_mode_thread_instance = None
-to_stop_auto_mode = False
+        control_window_found = zoom_window_exists("control")
+        if control_window_found:
+            approve_remote_control()
+        time.sleep(2)
 
 def set_auto_mode():
     print('setting auto mode')
-    global auto_mode_thread_instance, to_stop_auto_mode
+    global auto_mode_thread_instance
     
     if auto_mode_thread_instance is not None:
         return
         
-    to_stop_auto_mode = False
+    auto_mode_stop_event.clear()
     auto_mode_thread_instance = threading.Thread(target=auto_mode_thread, daemon=True)
     auto_mode_thread_instance.start()
 
 def unset_auto_mode():
-    global auto_mode_thread_instance, to_stop_auto_mode
+    global auto_mode_thread_instance
     
     if auto_mode_thread_instance is None:
         return
         
-    to_stop_auto_mode = True
+    auto_mode_stop_event.set()
     auto_mode_thread_instance.join(timeout=1.0)  # Wait up to 1 second for thread to finish
     auto_mode_thread_instance = None
