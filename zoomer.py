@@ -58,7 +58,6 @@ def create_zoom_room():
   share_screen()
 
 def approve_remote_control():
-  bring_zoom_window_to_top("missing")
   time.sleep(1)
   approve_position = find_text_in_screen('Approve', 400)
   if approve_position is not None:

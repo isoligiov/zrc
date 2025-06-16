@@ -90,19 +90,24 @@ def hide_zoom_window():
 
 def get_zoom_window_rects():
     script = """
-activate application "zoom.us"
 tell application "System Events"
-	set p to first process where it is frontmost
-	set res to ""
-	repeat with w in every window of p
-		set res to res & (name of w as string) & "\n"
-		set window_position to the position of w
-		set window_size to the size of w
-		set formatted_position to item 1 of window_position & "," & item 2 of window_position
-		set formatted_size to item 1 of window_size & "," & item 2 of window_size
-		set res to res & (formatted_position as string) & "," & (formatted_size as string) & "\n"
-	end repeat
-	return res
+	if exists (process "zoom.us") then
+		set p to process "zoom.us"
+		set res to ""
+		repeat with w in windows of p
+			try
+				set res to res & (name of w as string) & "\n"
+				set window_position to the position of w
+				set window_size to the size of w
+				set formatted_position to item 1 of window_position & "," & item 2 of window_position
+				set formatted_size to item 1 of window_size & "," & item 2 of window_size
+				set res to res & formatted_position & "," & formatted_size & "\n"
+			end try
+		end repeat
+		return res
+	else
+		return ""
+	end if
 end tell
 """
     exec_result = execute_apple_script(script)
