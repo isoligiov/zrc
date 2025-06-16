@@ -86,6 +86,15 @@ def approve_remote_control():
   move_mouse_smoothly(x, y, duration=0.5)
   click(x, y)
 
+  time.sleep(0.5)
+  confirm_position = find_text_in_screen('Confirm', 300)
+  if confirm_position is None:
+    print('Confirm button not found')
+    return
+  x, y = confirm_position
+  move_mouse_smoothly(x, y, duration=0.5)
+  click(x, y)
+
 def share_screen():
   bring_zoom_window_to_top("Zoom Meeting")
   time.sleep(1)
