@@ -243,5 +243,5 @@ end tell
 
 def vpn_connected():
     windows = get_vpn_window_rects()
-    disconnect_position = find_text_in_screen('Disconnect', 100, windows)
+    disconnect_position = find_text_in_screen('Disconnect', 160, windows)
     return bool(disconnect_position)

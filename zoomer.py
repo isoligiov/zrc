@@ -158,18 +158,25 @@ def auto_mode_thread():
     time.sleep(2)
 
 auto_mode_thread_instance = None
+to_stop_auto_mode = False
+
 def set_auto_mode():
-  print('setting auto mode')
-  global auto_mode_thread_instance
-  if auto_mode_thread_instance is not None:
-    return
-  auto_mode_thread_instance = threading.Thread(target=auto_mode_thread, daemon=True)
-  auto_mode_thread_instance.start()
+    print('setting auto mode')
+    global auto_mode_thread_instance, to_stop_auto_mode
+    
+    if auto_mode_thread_instance is not None:
+        return
+        
+    to_stop_auto_mode = False
+    auto_mode_thread_instance = threading.Thread(target=auto_mode_thread, daemon=True)
+    auto_mode_thread_instance.start()
 
 def unset_auto_mode():
-  # kill auto mode thread
-  global auto_mode_thread_instance
-  if auto_mode_thread_instance is None:
-    return
-  auto_mode_thread_instance.stop()
-  auto_mode_thread_instance = None
+    global auto_mode_thread_instance, to_stop_auto_mode
+    
+    if auto_mode_thread_instance is None:
+        return
+        
+    to_stop_auto_mode = True
+    auto_mode_thread_instance.join(timeout=1.0)  # Wait up to 1 second for thread to finish
+    auto_mode_thread_instance = None
