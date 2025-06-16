@@ -15,6 +15,7 @@ from zoomer import (
     switch_window,
     focus_zoom_meeting,
     hide_window,
+    set_auto_mode,
 )
 
 load_dotenv()
@@ -44,6 +45,8 @@ def on_message(message):
         focus_zoom_meeting()
     elif message == 'hide':
         hide_window()
+    elif message == 'auto':
+        set_auto_mode()
 
 def send_ping(ws):
     while not exit_flag.is_set():

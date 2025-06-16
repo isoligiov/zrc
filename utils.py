@@ -159,8 +159,9 @@ def min_rgb_filter(img):
             img.putpixel((x, y), (minimum_value, minimum_value, minimum_value))
     return img
 
-def find_text_in_screen(text_to_search: str, cut_size: int = 200):
-    windows = get_zoom_window_rects()
+def find_text_in_screen(text_to_search: str, cut_size: int = 200, windows = None):
+    if windows is None:
+        windows = get_zoom_window_rects()
     logical_left, logical_top, logical_right, logical_bottom = get_logical_screen_size()
     physical_width, physical_height = pyautogui.size()
     scalex = physical_width // (logical_right - logical_left)
@@ -211,3 +212,36 @@ def move_mouse_smoothly(target_x, target_y, duration=0.5, steps=150):
 
         mouse.position = (int(current_x), int(current_y))
         time.sleep(duration / steps)
+
+
+def get_vpn_window_rects():
+    script = """
+activate application "AWS VPN Client"
+tell application "System Events"
+	set p to first process where it is frontmost
+	set res to ""
+	repeat with w in every window of p
+		set res to res & (name of w as string) & "\n"
+		set window_position to the position of w
+		set window_size to the size of w
+		set formatted_position to item 1 of window_position & "," & item 2 of window_position
+		set formatted_size to item 1 of window_size & "," & item 2 of window_size
+		set res to res & (formatted_position as string) & "," & (formatted_size as string) & "\n"
+	end repeat
+	return res
+end tell
+"""
+    exec_result = execute_apple_script(script)
+    lines = exec_result.split('\n')
+    result = []
+    for i in range(0, len(lines), 2):
+        window_name = lines[i]
+        rect_str = lines[i + 1]
+        bounds = [ int(num) for num in rect_str.split(',') ]
+        result.append((window_name, bounds))
+    return result
+
+def vpn_connected():
+    windows = get_vpn_window_rects()
+    disconnect_position = find_text_in_screen('Disconnect', 100, windows)
+    return bool(disconnect_position)

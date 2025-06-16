@@ -5,6 +5,7 @@ from utils import (
   hide_zoom_window,
   find_text_in_screen,
   move_mouse_smoothly,
+  vpn_connected,
 )
 import time
 import os
@@ -90,6 +91,25 @@ def approve_remote_control():
     x, y = confirm_position
     move_mouse_smoothly(x, y, duration=0.5)
     click(x, y)
+
+def set_auto_mode():
+  while True:
+    connected = vpn_connected()
+    if connected:
+      break
+    time.sleep(1)
+
+  while True:
+    zoom_meeting_found = zoom_window_exists("Zoom Meeting")
+    if not zoom_meeting_found:
+      create_zoom_room()
+      time.sleep(2)
+      continue
+
+    control_window_found = zoom_window_exists("control")
+    if control_window_found:
+      approve_remote_control()
+    time.sleep(2)
 
 def share_screen():
   bring_zoom_window_to_top("Zoom Meeting")
