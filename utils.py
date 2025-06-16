@@ -48,7 +48,7 @@ activate application "zoom.us"
 tell application "System Events"
     set p to first process where it is frontmost
     repeat with w in every window of p
-        if (name of w) contains "{{title}}" then
+        if (name of w as string) contains "{{title}}" then
             return "yes"
         end if
     end repeat

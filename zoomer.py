@@ -78,7 +78,7 @@ def create_zoom_room():
   share_screen()
 
 def approve_remote_control():
-  bring_zoom_window_to_top("control")
+  bring_zoom_window_to_top("missing")
   time.sleep(1)
   approve_position = find_text_in_screen('Approve', 400)
   if approve_position is not None:
@@ -149,13 +149,14 @@ def auto_mode_thread():
 
     while not auto_mode_stop_event.is_set():
         zoom_meeting_found = zoom_window_exists("Zoom Meeting")
-        if not zoom_meeting_found:
+        zoom_floating_found = zoom_window_exists("floating")
+        if zoom_meeting_found == 'no' and zoom_floating_found == 'no':
             create_zoom_room()
             time.sleep(2)
             continue
 
-        control_window_found = zoom_window_exists("control")
-        if control_window_found:
+        control_window_found = zoom_window_exists("missing")
+        if control_window_found == 'yes':
             approve_remote_control()
         time.sleep(2)
 
