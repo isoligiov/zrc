@@ -125,14 +125,14 @@ end tell
     print(rect_str)
     return [ int(num.strip()) for num in rect_str.split(',') ]
 
-def filter_lowercase_alpha(input_string):
-    return ''.join([char for char in input_string if 'a' <= char <= 'z'])
+def filter_alpha(input_string):
+    return ''.join([char for char in input_string if 'a' <= char <= 'z' or 'A' <= char <= 'Z'])
 
 def find_text_position(image, target_text, lang='eng'):
     data = pytesseract.image_to_data(image, lang=lang, output_type=pytesseract.Output.DICT)
     for i, word in enumerate(data['text']):
         print(word)
-        if target_text.lower() in filter_lowercase_alpha(word.lower().strip()):
+        if target_text in filter_alpha(word.strip()):
             x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
             return x, y, w, h
     return None

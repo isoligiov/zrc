@@ -78,11 +78,11 @@ def create_zoom_room():
 def approve_remote_control():
   bring_zoom_window_to_top("control")
   time.sleep(1)
-  admit_position = find_text_in_screen('Approve', 400)
-  if admit_position is None:
-    print('Admit button not found')
+  approve_position = find_text_in_screen('Approve', 400)
+  if approve_position is None:
+    print('Approve button not found')
     return
-  x, y = admit_position
+  x, y = approve_position
   move_mouse_smoothly(x, y, duration=0.5)
   click(x, y)
 
