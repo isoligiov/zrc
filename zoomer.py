@@ -46,26 +46,6 @@ def create_zoom_room():
   # check if zoom room is created
   if zoom_meeting_found == 'no':
     return False
-  
-  # Wait for Join Audio window
-  join_audio_found = 'no'
-  for i in range(3):
-    join_audio_found = zoom_window_exists("Join audio")
-    time.sleep(3)
-    if join_audio_found == 'yes':
-      break
-
-  # if join audio window is created, confirm join audio
-  if join_audio_found == 'yes':
-    bring_zoom_window_to_top("Join audio")
-    time.sleep(.5)
-    print('join audio found')
-    for i in range(3):
-      press('enter')
-      time.sleep(3)
-      join_audio_found = zoom_window_exists("Join audio")
-      if join_audio_found == 'no':
-        break
 
   for i in range(5):
     press('enter')
@@ -150,12 +130,14 @@ def auto_mode_thread():
     while not auto_mode_stop_event.is_set():
         zoom_meeting_found = zoom_window_exists("Zoom Meeting")
         zoom_floating_found = zoom_window_exists("floating")
+        print(zoom_meeting_found, zoom_floating_found)
         if zoom_meeting_found == 'no' and zoom_floating_found == 'no':
             create_zoom_room()
             time.sleep(2)
             continue
 
         control_window_found = zoom_window_exists("missing")
+        print("control_window_found", control_window_found)
         if control_window_found == 'yes':
             approve_remote_control()
         time.sleep(2)
