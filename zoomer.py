@@ -3,7 +3,7 @@ from utils import (
   bring_zoom_window_to_top,
   zoom_window_exists,
   hide_zoom_window,
-  find_admit_button,
+  find_text_in_screen,
   move_mouse_smoothly,
 )
 import time
@@ -78,7 +78,13 @@ def create_zoom_room():
 def approve_remote_control():
   bring_zoom_window_to_top("control")
   time.sleep(1)
-  press('enter')
+  admit_position = find_text_in_screen('Approve')
+  if admit_position is None:
+    print('Admit button not found')
+    return
+  x, y = admit_position
+  move_mouse_smoothly(x, y, duration=0.5)
+  click(x, y)
 
 def share_screen():
   bring_zoom_window_to_top("Zoom Meeting")
@@ -91,7 +97,7 @@ def share_screen():
 
 def admit_user():
   bring_zoom_window_to_top("Zoom Meeting")
-  admit_position = find_admit_button()
+  admit_position = find_text_in_screen('Admit')
   if admit_position is None:
     print('Admit button not found')
     return

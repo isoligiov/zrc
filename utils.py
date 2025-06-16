@@ -159,7 +159,7 @@ def min_rgb_filter(img):
             img.putpixel((x, y), (minimum_value, minimum_value, minimum_value))
     return img
 
-def find_admit_button():
+def find_text_in_screen(text_to_search: str):
     windows = get_zoom_window_rects()
     logical_left, logical_top, logical_right, logical_bottom = get_logical_screen_size()
     physical_width, physical_height = pyautogui.size()
@@ -180,10 +180,10 @@ def find_admit_button():
             )
             filtered_image = min_rgb_filter(zoom_screenshot)
             filtered_image.save(img_save_path)
-            admit_position = find_text_position(filtered_image, 'Admit')
-            if admit_position is not None:
+            searched_position = find_text_position(filtered_image, text_to_search)
+            if searched_position is not None:
                 # physical_width, physical_height = pyautogui.size()
-                x, y, w, h = admit_position
+                x, y, w, h = searched_position
                 centerx = window_left + (x + w // 2) / scalex
                 centery = window_top + (y + h // 2) / scaley
                 return centerx, centery
