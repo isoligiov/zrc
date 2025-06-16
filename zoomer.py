@@ -12,6 +12,7 @@ import os
 import subprocess
 import sys
 from config import ZOOM_APP_WINDOWS_PATH
+import threading
 
 def open_zoom_app():
   if sys.platform == "darwin":
@@ -92,24 +93,6 @@ def approve_remote_control():
     move_mouse_smoothly(x, y, duration=0.5)
     click(x, y)
 
-def set_auto_mode():
-  while True:
-    connected = vpn_connected()
-    if connected:
-      break
-    time.sleep(1)
-
-  while True:
-    zoom_meeting_found = zoom_window_exists("Zoom Meeting")
-    if not zoom_meeting_found:
-      create_zoom_room()
-      time.sleep(2)
-      continue
-
-    control_window_found = zoom_window_exists("control")
-    if control_window_found:
-      approve_remote_control()
-    time.sleep(2)
 
 def share_screen():
   bring_zoom_window_to_top("Zoom Meeting")
@@ -148,3 +131,45 @@ def switch_window():
 
 def hide_window():
   hide_zoom_window()
+
+
+
+
+def auto_mode_thread():
+  print('auto mode thread started')
+  while True:
+    connected = vpn_connected()
+    if connected:
+      break
+    time.sleep(1)
+
+  print('auto mode set')
+
+  while True:
+    zoom_meeting_found = zoom_window_exists("Zoom Meeting")
+    if not zoom_meeting_found:
+      create_zoom_room()
+      time.sleep(2)
+      continue
+
+    control_window_found = zoom_window_exists("control")
+    if control_window_found:
+      approve_remote_control()
+    time.sleep(2)
+
+auto_mode_thread_instance = None
+def set_auto_mode():
+  print('setting auto mode')
+  global auto_mode_thread_instance
+  if auto_mode_thread_instance is not None:
+    return
+  auto_mode_thread_instance = threading.Thread(target=auto_mode_thread, daemon=True)
+  auto_mode_thread_instance.start()
+
+def unset_auto_mode():
+  # kill auto mode thread
+  global auto_mode_thread_instance
+  if auto_mode_thread_instance is None:
+    return
+  auto_mode_thread_instance.stop()
+  auto_mode_thread_instance = None
