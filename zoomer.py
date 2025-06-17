@@ -46,6 +46,8 @@ def create_zoom_room():
   # check if zoom room is created
   if zoom_meeting_found == 'no':
     return False
+
+  time.sleep(7)
   
   # Share screen
   time.sleep(1)
